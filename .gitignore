@@ -29,6 +29,9 @@ yarn-error.log*
 prisma/*.db
 prisma/*.db-journal
 
+# Temporary export files
+*.csv
+
 # OS files
 .DS_Store
 *.pem
@@ -36,3 +39,4 @@ prisma/*.db-journal
 # IDE / Editors
 .vscode/
 .idea/
+

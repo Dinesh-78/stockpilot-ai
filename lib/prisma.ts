@@ -2,6 +2,8 @@ import { PrismaClient } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
 
+let dbUrl = 'file:./dev.db';
+
 // On Vercel serverless functions, SQLite database must reside in /tmp for write access
 if (process.env.VERCEL) {
   const tmpDbPath = '/tmp/dev.db';
@@ -15,7 +17,9 @@ if (process.env.VERCEL) {
       }
     }
   }
-  process.env.DATABASE_URL = 'file:/tmp/dev.db';
+  dbUrl = 'file:/tmp/dev.db';
+} else if (process.env.DATABASE_URL) {
+  dbUrl = process.env.DATABASE_URL;
 }
 
 const globalForPrisma = globalThis as unknown as {
@@ -25,6 +29,11 @@ const globalForPrisma = globalThis as unknown as {
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
+    datasources: {
+      db: {
+        url: dbUrl,
+      },
+    },
     log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
   });
 
